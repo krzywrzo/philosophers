@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 11:53:35 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/09/07 19:37:04 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/09/08 12:59:24 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,38 +74,34 @@ int	init_forks(t_sim_params *sim)	// FIXME: error returns
 
 int create_threads(t_sim_params *sim)	// FIXME: norminette
 {
-    int i;
-
-    i = 0;
+	int i;
 	pthread_t monitor;
 
-	
-	
+	i = 0;
 	while (i < sim->no_of_philo)
 	{
 		pthread_mutex_init(&sim->forks[i], NULL);
 		i++;
 	}
 	i = 0;
-    while (i < sim->no_of_philo)
-    {
+	while (i < sim->no_of_philo)
+	{
 		pthread_create(&sim->threads[i], NULL, routine, &sim->philos[i]);
 		pthread_create(&monitor, NULL, monitor_routine, &sim->philos[i]);
 		i++;
-    }
-    i = 0;
-    while (i < sim->no_of_philo)
-    {
+	}
+	i = 0;
+	while (i < sim->no_of_philo)
+	{
 		pthread_join(sim->threads[i], NULL);
 		pthread_join(monitor, NULL);
-        i++;
-    }
+		i++;
+	}
 	i = 0;
 	while (i < sim->no_of_philo)
 	{
 		pthread_mutex_destroy(&sim->forks[i]);
 		i++;
 	}
-	
-    return (0);
+	return (0);
 }
