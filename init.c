@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 11:53:35 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/09/08 12:59:24 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:40:22 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	init_sim(t_sim_params *sim, int argc, char **argv)	// FIXME: error returns
 	sim->time_to_die = atoi(argv[2]);
 	sim->time_to_eat = atoi(argv[3]);
 	sim->time_to_sleep = atoi(argv[4]);
+	sim->stop = 0;
 	sim->no_of_meals = (argc == 6) ? atoi(argv[5]) : -1;
 	if (sim->no_of_philo <= 0 || sim->time_to_die <= 0
 		|| sim->time_to_eat <= 0 || sim->time_to_sleep <= 0)
@@ -75,7 +76,6 @@ int	init_forks(t_sim_params *sim)	// FIXME: error returns
 int create_threads(t_sim_params *sim)	// FIXME: norminette
 {
 	int i;
-	pthread_t monitor;
 
 	i = 0;
 	while (i < sim->no_of_philo)
@@ -87,20 +87,35 @@ int create_threads(t_sim_params *sim)	// FIXME: norminette
 	while (i < sim->no_of_philo)
 	{
 		pthread_create(&sim->threads[i], NULL, routine, &sim->philos[i]);
-		pthread_create(&monitor, NULL, monitor_routine, &sim->philos[i]);
+		pthread_create(&sim->monitor, NULL, monitor_routine, sim);
 		i++;
 	}
+	// i = 0;
+	// while (i < sim->no_of_philo)
+	// {
+	// 	pthread_join(sim->threads[i], NULL);
+	// 	pthread_join(monitor, NULL);
+	// 	i++;
+	// }
+	// i = 0;
+	// while (i < sim->no_of_philo)
+	// {
+	// 	pthread_mutex_destroy(&sim->forks[i]);
+	// 	i++;
+	// }
+	return (0);
+}
+
+int	join_threads(t_sim_params *sim)
+{
+	int	i;
+
 	i = 0;
 	while (i < sim->no_of_philo)
 	{
 		pthread_join(sim->threads[i], NULL);
-		pthread_join(monitor, NULL);
-		i++;
-	}
-	i = 0;
-	while (i < sim->no_of_philo)
-	{
 		pthread_mutex_destroy(&sim->forks[i]);
+		pthread_mutex_destroy(&sim->philos->state_mutex);
 		i++;
 	}
 	return (0);

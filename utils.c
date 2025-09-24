@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 15:11:43 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/09/07 18:21:31 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/09/23 14:39:32 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,28 @@ long	time_in_ms()
 	ms = tv.tv_sec * 1000 + tv.tv_usec / 1000;
 	return (ms);
 }
-int	is_dead (t_philo *ph)
+void	print_sim_params(t_sim_params *sim)
 {
-	if (ph->last_meal > ph->sim->time_to_die)
+	int	i;
+
+	if (!sim)
+		return ;
+	printf("=== Simulation Parameters ===\n");
+	printf("no_of_philo: %d\n", sim->no_of_philo);
+	printf("time_to_die: %d\n", sim->time_to_die);
+	printf("time_to_eat: %d\n", sim->time_to_eat);
+	printf("time_to_sleep: %d\n", sim->time_to_sleep);
+	printf("no_of_meals: %d\n", sim->no_of_meals);
+	printf("start_time: %ld\n", sim->start_time);
+	printf("stop flag: %d\n", sim->stop);
+	printf("Threads ptr: %p\n", (void *)sim->threads);
+	printf("Forks ptr: %p\n", (void *)sim->forks);
+	printf("Philos ptr: %p\n", (void *)sim->philos);
+	i = 0;
+	while (i < sim->no_of_philo)
 	{
-		pthread_mutex_lock(&ph->sim->print_mutex);
-		printf("ms: %ld id: %d is DEAD\n", get_elapsed_time(ph->sim->start_time), ph->id_philo);
-		pthread_mutex_unlock(&ph->sim->print_mutex);
-		return (1);
+		// printf("Philo[%d] addr: %p\n", i, (void *)&sim->philos[i]);
+		i++;
 	}
-	else
-		return(0);
+	printf("=============================\n");
 }

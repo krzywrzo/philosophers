@@ -24,6 +24,7 @@ typedef struct s_sim_params
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
 	int				stop;
+	pthread_t 		monitor;
 	t_philo			*philos;
 }	t_sim_params;
 
@@ -45,21 +46,28 @@ struct s_philo
 //	routine.c
 void	*routine(void *ph);
 void	*monitor_routine(void *philo);
-void	even_fork(t_philo *ph);
-void	odd_fork(t_philo *ph);
-void	end_simulation(t_philo *ph);
+int		even_fork(t_philo *ph);
+int		odd_fork(t_philo *ph);
+void	end_simulation(t_sim_params *sim);
 
 //	init.c
 int		init_sim(t_sim_params *sim, int argc, char **argv);
 int		init_philos(t_sim_params *sim);
 int		init_forks(t_sim_params *sim);
 int 	create_threads(t_sim_params *sim);
+int	join_threads(t_sim_params *sim);
 
 //	utils.c
 int		print_error(int flag);
 int		validate_args(int argc, char **argv);
 long	get_elapsed_time(long start_time);
 long	time_in_ms();
-int		is_dead (t_philo *ph);
+void	print_sim_params(t_sim_params *sim);
+
+//	routine_utils.c
+int	print_msg(t_philo *ph, char *msg);
+void	ft_sleep(long ms);
+
+void	print_sim_params(t_sim_params *sim);
 
 # endif
