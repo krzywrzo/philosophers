@@ -6,7 +6,7 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 17:01:05 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/09/24 15:42:43 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:06:17 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ void    *monitor_routine(void *arg)
                 pthread_mutex_lock(&sim->print_mutex);
                 if (!sim->stop)
 				{
-					
+
 					// printf("	SIM->STOP=%d\n", sim->stop);
 					// printf("	ID: %d SINCE EATING: %ld\n",ph->id_philo, time_in_ms() - ph->last_meal);
                     printf("%ld %d died\n",
@@ -263,4 +263,8 @@ void	end_simulation(t_sim_params *sim)
 		i++;
 	}
 	pthread_mutex_destroy(&sim->print_mutex);
+	free(sim->philos);
+	free(sim->forks);
+	free(sim->threads);
+	free(sim);
 }
