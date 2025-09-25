@@ -1,9 +1,8 @@
-#	TODO: add proper compilation flags
 CC      = cc
-CFLAGS  = -pthread
+CFLAGS  = -pthread -Wall -Wextra -Werror -g
 RM      = rm -f
 
-SRC     = main.c utils.c init.c routine.c routine_utils.c
+SRC     = main.c utils.c init.c routine.c routine_utils.c fork_utils.c
 OBJS    = $(SRC:.c=.o)
 NAME    = philo
 HEADER  = philo.h

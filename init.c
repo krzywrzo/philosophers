@@ -6,13 +6,13 @@
 /*   By: kwrzosek <kwrzosek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 11:53:35 by kwrzosek          #+#    #+#             */
-/*   Updated: 2025/09/24 15:40:22 by kwrzosek         ###   ########.fr       */
+/*   Updated: 2025/09/25 22:14:20 by kwrzosek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_sim(t_sim_params *sim, int argc, char **argv)	// FIXME: error returns 
+int	init_sim(t_sim_params *sim, int argc, char **argv)
 {
 	if (argc < 5 || argc > 6)
 		return (1);
@@ -21,9 +21,12 @@ int	init_sim(t_sim_params *sim, int argc, char **argv)	// FIXME: error returns
 	sim->time_to_eat = atoi(argv[3]);
 	sim->time_to_sleep = atoi(argv[4]);
 	sim->stop = 0;
-	sim->no_of_meals = (argc == 6) ? atoi(argv[5]) : -1;
-	if (sim->no_of_philo <= 0 || sim->time_to_die <= 0
-		|| sim->time_to_eat <= 0 || sim->time_to_sleep <= 0)
+	if (argc == 6)
+		sim->no_of_meals = atoi(argv[5]);
+	else
+		sim->no_of_meals = -1;
+	if (sim->no_of_philo <= 0 || sim->time_to_die <= 0 || sim->time_to_eat <= 0
+		|| sim->time_to_sleep <= 0)
 		return (1);
 	sim->threads = malloc(sizeof(pthread_t) * sim->no_of_philo);
 	sim->forks = malloc(sizeof(pthread_mutex_t) * sim->no_of_philo);
@@ -59,7 +62,7 @@ int	init_philos(t_sim_params *sim)
 	return (0);
 }
 
-int	init_forks(t_sim_params *sim)	// FIXME: error returns 
+int	init_forks(t_sim_params *sim)
 {
 	int	i;
 
@@ -73,9 +76,9 @@ int	init_forks(t_sim_params *sim)	// FIXME: error returns
 	return (0);
 }
 
-int create_threads(t_sim_params *sim)	// FIXME: norminette
+int	create_threads(t_sim_params *sim)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < sim->no_of_philo)
@@ -84,25 +87,13 @@ int create_threads(t_sim_params *sim)	// FIXME: norminette
 		i++;
 	}
 	i = 0;
+	pthread_mutex_init(&sim->stop_mutex, NULL);
 	while (i < sim->no_of_philo)
 	{
 		pthread_create(&sim->threads[i], NULL, routine, &sim->philos[i]);
-		pthread_create(&sim->monitor, NULL, monitor_routine, sim);
 		i++;
 	}
-	// i = 0;
-	// while (i < sim->no_of_philo)
-	// {
-	// 	pthread_join(sim->threads[i], NULL);
-	// 	pthread_join(monitor, NULL);
-	// 	i++;
-	// }
-	// i = 0;
-	// while (i < sim->no_of_philo)
-	// {
-	// 	pthread_mutex_destroy(&sim->forks[i]);
-	// 	i++;
-	// }
+	pthread_create(&sim->monitor, NULL, monitor_routine, sim);
 	return (0);
 }
 
